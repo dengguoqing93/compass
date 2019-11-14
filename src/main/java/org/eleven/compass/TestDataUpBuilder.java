@@ -15,35 +15,13 @@
  */
 package org.eleven.compass;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author: <a herf="mailto:jarodchao@126.com>jarod </a>
- * @date: 2019-11-13
+ * @date: 2019-11-14
  */
-public class TestPlan<O, E> {
+public class TestDataUpBuilder {
 
-    private List<TestDataUp> globalDataUps = new ArrayList<>(10);
-
-    private List<TestCase<O, E>> testCases = new ArrayList<>(10);
-
-
-    public TestPlan addGlobalDataUp(TestDataUp globalDataUp) {
-        this.globalDataUps.add(globalDataUp);
-        return this;
-    }
-
-    public TestPlan addTestCase(TestCase testCase) {
-        this.testCases.add(testCase);
-        return this;
-    }
-
-    public List<TestDataUp> getGlobalDataUps() {
-        return globalDataUps;
-    }
-
-    public List<TestCase<O, E>> getTestCases() {
-        return testCases;
+    public <T> TestDataUp<T> build() {
+        return new TestDataUp<>();
     }
 }
