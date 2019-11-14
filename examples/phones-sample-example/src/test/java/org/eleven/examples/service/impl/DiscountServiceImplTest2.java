@@ -15,10 +15,7 @@
  */
 package org.eleven.examples.service.impl;
 
-import org.eleven.compass.AbstractCompassTestSuit;
-import org.eleven.compass.TestCase;
-import org.eleven.compass.TestDataUp;
-import org.eleven.compass.TestMethod;
+import org.eleven.compass.domain.AbstractCompassTestSuit;
 import org.eleven.examples.dao.DiscountDao;
 import org.eleven.examples.entity.Discount;
 import org.eleven.examples.exception.PhoneException;
@@ -33,7 +30,7 @@ import java.util.Date;
  * @author: <a herf="mailto:jarodchao@126.com>jarod </a>
  * @date: 2019-11-14
  */
-public class DiscountServiceImplTest2 extends AbstractCompassTestSuit<DiscountService> {
+public class DiscountServiceImplTest2 extends AbstractCompassTestSuit<DiscountService,BigDecimal, PhoneException> {
 
     @Autowired
     private DiscountDao discountDao;
@@ -41,24 +38,23 @@ public class DiscountServiceImplTest2 extends AbstractCompassTestSuit<DiscountSe
 
     @Override
     protected void loadTestPlan() {
-        testPlan.addTestCase(TestCase.<BigDecimal, PhoneException>builder("测试修改折扣率小于0")
+        testPlan.addTestCase(testCase("测试修改折扣率小于0")
                 .addInputArgs("sdk0000001", BigDecimal.valueOf(-1.0))
                 .thenException(e -> "error001".equals(e.getErrCode()))
-        ).addTestCase(TestCase.<BigDecimal, PhoneException>builder("测试修改折扣率大于100")
+        ).addTestCase(testCase("测试修改折扣率大于100")
                 .addInputArgs("sdk9999999", BigDecimal.valueOf(101.0))
                 .thenException(e -> "error002".equals(e.getErrCode()))
-        ).addTestCase(TestCase.<BigDecimal, PhoneException>builder("测试折扣不存在")
+        ).addTestCase(testCase("测试折扣不存在")
                         .addInputArgs("sdk9999999", BigDecimal.valueOf(1.0))
                         .thenException(e -> "error003".equals(e.getErrCode()))
-        ).addTestCase(TestCase.<BigDecimal, PhoneException>builder("测试修改折扣值符合预期")
-                    .addDataUp(TestDataUp.builder().addDataUpMethod(
-                            TestMethod.<DiscountDao>builder()
-                                    .addTestBeanClass(DiscountDao.class)
-                                    .addTestMethodName("insert")
-                                    .addParamTypes(Discount.class).build())
-                    .addData(new Discount("sdk0000001", new Date(), new Date(), BigDecimal.valueOf(0.17)))
-
-        ).addInputArgs("sdk0000001",0.5).thenComplete(() -> {
+        ).addTestCase(testCase("测试修改折扣值符合预期")
+                    .addDataUp(createDataUp().build().addDataUpMethod(
+                            createTestMethod().<DiscountDao>build()
+                            .addTestBeanClass(DiscountDao.class)
+                            .addTestMethodName("insert")
+                            .addParamTypes(Discount.class).build())
+                            .addData(new Discount("sdk0000001", new Date(), new Date(), BigDecimal.valueOf(0.17))))
+                .addInputArgs("sdk0000001",0.5).thenComplete(() -> {
                     BigDecimal dbDiscount = discountDao.getDiscountBySdk("sdk0000001");
                     Assert.assertFalse("修改值正确",
                             BigDecimal.valueOf(0.5).compareTo(dbDiscount) != 0 ? false : true);

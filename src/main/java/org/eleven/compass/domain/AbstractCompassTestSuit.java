@@ -13,8 +13,9 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package org.eleven.compass;
+package org.eleven.compass.domain;
 
+import org.eleven.compass.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
+
+import static org.eleven.compass.TestCase.builder;
+
 /**
  * @author: <a herf="mailto:jarodchao@126.com>jarod </a>
  * @date: 2019-11-13
@@ -31,7 +36,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Rollback
-public abstract class AbstractCompassTestSuit<T> {
+public abstract class AbstractCompassTestSuit<T, O, E> {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -40,7 +45,8 @@ public abstract class AbstractCompassTestSuit<T> {
 
     protected boolean byType = true;
 
-    protected TestPlan testPlan = new TestPlan();
+    protected TestPlan<O, E> testPlan = new TestPlan<>();
+
 
     @Before
     public void prepareContext() {
@@ -63,14 +69,23 @@ public abstract class AbstractCompassTestSuit<T> {
         prepareTestCase();
     }
 
-    private void prepareTestCase(){
+    public TestCase<O, E> testCase(String caseName) {
+        return TestCase.builder(caseName);
+    }
+
+    public TestDataUpBuilder createDataUp() {
+        return new TestDataUpBuilder();
+    }
+
+    public TestMethodBuilder createTestMethod() {
+        return new TestMethodBuilder();
+    }
+
+    private void prepareTestCase() {
         if (testPlan.getTestCases() != null && testPlan.getTestCases().size() > 0) {
             testPlan.getTestCases().forEach(testCase -> {
                 testCase.check();
-                testCase.getDataUps().forEach(o -> {
-                    TestDataUp testDataUp = (TestDataUp)o;
-                    initDataUp(testDataUp);
-                });
+                testCase.getDataUps().forEach(testDataUp -> initDataUp(testDataUp));
             });
         }
     }
@@ -96,6 +111,7 @@ public abstract class AbstractCompassTestSuit<T> {
 
     /**
      * Get test case
+     *
      * @return
      */
     protected abstract void loadTestPlan();

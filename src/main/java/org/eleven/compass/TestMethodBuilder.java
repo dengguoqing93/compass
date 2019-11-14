@@ -16,11 +16,12 @@
 package org.eleven.compass;
 
 /**
- * @author: <a herf="matilto:jarodchao@126.com>jarod </a>
+ * @author: <a herf="mailto:jarodchao@126.com>jarod </a>
  * @date: 2019-11-14
  */
-@FunctionalInterface
-public interface CheckDataAfterRunHandler {
+public class TestMethodBuilder {
 
-    void check();
+    public <T> TestMethod<T> build() {
+        return TestMethod.builder();
+    }
 }

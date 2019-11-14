@@ -22,36 +22,34 @@ import java.util.List;
  * @author: <a herf="mailto:jarodchao@126.com>jarod </a>
  * @date: 2019-11-13
  */
-public class TestDataUp {
+public class TestDataUp<T> {
 
     private TestMethod dataUpMethod;
 
-    private List<Object> data = new ArrayList<>(10);
+    private List data = new ArrayList<>(10);
 
     public TestDataUp addDataUpMethod(TestMethod testMethod) {
         this.dataUpMethod = testMethod;
         return this;
     }
 
-    public TestDataUp addData(Object object) {
+    public <T> TestDataUp<T> addData(T object) {
 
         data.add(object);
-        return this;
-    }
-
-    public static TestDataUp builder() {
-        return new TestDataUp();
+        return (TestDataUp<T>) this;
     }
 
     public TestMethod getDataUpMethod() {
         return dataUpMethod;
     }
 
-    public List<Object> getData() {
+    public List<T> getData() {
         return data;
     }
 
     public void run() {
+
+        dataUpMethod.build();
 
         data.forEach(o -> {
             try {

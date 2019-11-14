@@ -15,6 +15,7 @@
  */
 package org.eleven.compass;
 
+import org.eleven.compass.handler.CheckDataAfterRunHandler;
 import org.junit.Assert;
 
 import java.util.ArrayList;

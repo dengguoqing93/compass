@@ -74,7 +74,7 @@ public class TestMethod<T> {
         return new TestMethod();
     }
 
-    public TestMethod build() {
+    public TestMethod<T> build() {
 
         afterPropertiesSet();
 
